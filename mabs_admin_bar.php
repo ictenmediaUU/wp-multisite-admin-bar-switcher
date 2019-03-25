@@ -109,7 +109,7 @@ class MABS_Admin_Bar extends WP_Admin_Bar
             update_user_meta( $user_id, 'primary_blog', $first_blog->userblog_id );
             $primary = $first_blog;
         }
-
+        
         if ( ( ! is_object( $primary ) ) || ( $primary->archived == 1 || $primary->spam == 1 || $primary->deleted == 1 ) ) {
             $blogs = mabs_get_blogs_of_user( $user_id ); // if a user's primary blog is shut down, check their other blogs.
             $ret = false;

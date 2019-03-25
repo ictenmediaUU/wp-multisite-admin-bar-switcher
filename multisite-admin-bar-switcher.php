@@ -101,7 +101,7 @@ add_action('admin_bar_menu', function() {
     $wp_admin_bar->add_menu(array(
         'parent' => false,
         'id' => 'mabs',
-        'title' => trim(__('My Sites:') . ' ' . apply_filters('mabs_blog_name', $blogname, $bloginfo)),
+        'title' => trim(apply_filters('mabs_blog_name', $blogname, $bloginfo)) . ' (' . $current_blog->blog_id . ')',
         'href' => $url,
     ));
 
@@ -110,7 +110,7 @@ add_action('admin_bar_menu', function() {
     $wp_admin_bar->add_menu(array(
         'parent' => 'mabs',
         'id' => 'mabs_yoursite',
-        'title' =>__('Your Site'),
+        'title' =>__('Current Site'),
         'href' => str_replace('/wp-admin/', '', $url)
     ));
     mabs_display_blog_pages($current_user, 'yoursite', $url, $current_blog);
@@ -204,7 +204,13 @@ function mabs_site_count_below_minimum($user)
  */
 function mabs_display_blog_pages( $user, $id, $admin_url, $blog )
 {
+    //print_r($blog);
     global $wp_admin_bar;
+    if ($blog->userblog_id < 1) 
+        $site_id = $blog->blog_id;
+    else 
+        $site_id = $blog->userblog_id;
+
     if ( $id == 'network' )
         $pages = array(
             'dashboard'     => array('url' => 'index.php'),
@@ -216,7 +222,10 @@ function mabs_display_blog_pages( $user, $id, $admin_url, $blog )
             'updates'       => array('url' => 'update-core.php'),
         );
     else
+
         $pages = array(
+            'edit ('.$site_id .')' => array('url' => network_admin_url() . 'site-info.php?id=' . $site_id , 'permission' => 'manage_network'), 
+            'themes'        => array('url' => network_admin_url() . 'site-themes.php?id=' . $site_id , 'permission' => 'manage_network'),
             'dashboard'     => array('url' => 'index.php'),
             'visit'         => array('url' => ''),
             'posts'         => array('url' => 'edit.php',           'permission' => 'edit_posts'),
